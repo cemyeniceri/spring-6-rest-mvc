@@ -73,7 +73,7 @@ public class BootstrapData implements CommandLineRunner {
                     .upc("12356")
                     .price(new BigDecimal("12.99"))
                     .quantityOnHand(122)
-                    .createdDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
                     .build();
 
@@ -83,7 +83,7 @@ public class BootstrapData implements CommandLineRunner {
                     .upc("12356222")
                     .price(new BigDecimal("11.99"))
                     .quantityOnHand(392)
-                    .createdDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
                     .build();
 
@@ -93,7 +93,7 @@ public class BootstrapData implements CommandLineRunner {
                     .upc("12356")
                     .price(new BigDecimal("13.99"))
                     .quantityOnHand(144)
-                    .createdDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
                     .build();
             beerRepository.saveAll(Arrays.asList(beer1, beer2, beer3));
@@ -104,19 +104,19 @@ public class BootstrapData implements CommandLineRunner {
         if (customerRepository.count() == 0) {
             Customer customer1 = Customer.builder()
                     .customerName("Cem")
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
+                    .updateDate(LocalDateTime.now())
                     .build();
 
             Customer customer2 = Customer.builder()
                     .customerName("Ruya")
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
+                    .updateDate(LocalDateTime.now())
                     .build();
             Customer customer3 = Customer.builder()
                     .customerName("Ares")
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
+                    .createDate(LocalDateTime.now())
+                    .updateDate(LocalDateTime.now())
                     .build();
 
             customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3));
