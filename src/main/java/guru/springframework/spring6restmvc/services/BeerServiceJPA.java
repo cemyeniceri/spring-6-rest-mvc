@@ -6,6 +6,10 @@ import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Primary
 @RequiredArgsConstructor
@@ -23,12 +28,16 @@ public class BeerServiceJPA implements BeerService {
 
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
+    private final CacheManager cacheManager;
 
     private static final int DEFAULT_PAGE_SIZE = 25;
     private static final int DEFAULT_PAGE_NUMBER = 0;
 
+    @Cacheable(cacheNames = "beerListCache")
     @Override
     public Page<BeerDTO> getAllBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
+        log.info("Get All beers - in service");
+
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
 
         Page<Beer> beerPage;
@@ -73,18 +82,22 @@ public class BeerServiceJPA implements BeerService {
         return beerRepository.findAllByBeerNameIsLike("%" + beerName + "%", pageRequest);
     }
 
+    @Cacheable(cacheNames = "beerCache", key = "#id")
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
+        log.info("Get beer by id - in service");
         return beerRepository.findById(id).map(beerMapper::beerToBeerDTO);
     }
 
     @Override
     public BeerDTO saveBeer(BeerDTO beer) {
+        Optional.ofNullable(cacheManager.getCache("beerListCache")).ifPresent(Cache::clear);
         return beerMapper.beerToBeerDTO(beerRepository.save(beerMapper.beerDtoToBeer(beer)));
     }
 
     @Override
     public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer) {
+        clearCache(beerId);
         return beerRepository.findById(beerId).map(foundBeer -> {
             foundBeer.setBeerName(beer.getBeerName());
             foundBeer.setBeerStyle(beer.getBeerStyle());
@@ -97,6 +110,8 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public Boolean deleteBeerById(UUID beerId) {
+        clearCache(beerId);
+
         if (beerRepository.existsById(beerId)) {
             beerRepository.deleteById(beerId);
             return true;
@@ -107,6 +122,8 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public Optional<BeerDTO> updateBeerPartiallyById(UUID beerId, BeerDTO beer) {
+
+        clearCache(beerId);
 
         return beerRepository.findById(beerId).map(foundBeer -> {
                     if (StringUtils.hasText(beer.getBeerName())) {
@@ -128,5 +145,10 @@ public class BeerServiceJPA implements BeerService {
                     return beerMapper.beerToBeerDTO(beerRepository.save(foundBeer));
                 }
         );
+    }
+
+    private void clearCache(UUID uuid) {
+        Optional.ofNullable(cacheManager.getCache("beerListCache")).ifPresent(Cache::clear);
+        Optional.ofNullable(cacheManager.getCache("beerCache")).ifPresent(cache -> cache.evict(uuid));
     }
 }
