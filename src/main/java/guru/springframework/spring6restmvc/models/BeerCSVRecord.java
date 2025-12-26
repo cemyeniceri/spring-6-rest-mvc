@@ -1,4 +1,4 @@
-package guru.springframework.spring6restmvc.model;
+package guru.springframework.spring6restmvc.models;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;

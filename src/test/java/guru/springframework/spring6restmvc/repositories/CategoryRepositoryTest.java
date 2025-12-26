@@ -1,7 +1,7 @@
 package guru.springframework.spring6restmvc.repositories;
 
-import guru.springframework.spring6restmvc.entity.Beer;
-import guru.springframework.spring6restmvc.entity.Category;
+import guru.springframework.spring6restmvc.entities.Beer;
+import guru.springframework.spring6restmvc.entities.Category;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

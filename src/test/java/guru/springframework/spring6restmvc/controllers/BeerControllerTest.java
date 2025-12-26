@@ -1,8 +1,8 @@
 package guru.springframework.spring6restmvc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guru.springframework.spring6restmvc.config.SpringSecurityConfig;
-import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.configs.SpringSecurityConfig;
+import guru.springframework.spring6restmvc.models.BeerDTO;
 import guru.springframework.spring6restmvc.services.BeerService;
 import guru.springframework.spring6restmvc.services.BeerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,14 +56,14 @@ class BeerControllerTest {
 
     BeerServiceImpl beerServiceImpl;
 
-    private final SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtRequestPostProcessor = jwt().jwt(jwt -> {
-        jwt.claims(claims -> {
-                    claims.put("scope", "message-read");
-                    claims.put("scope", "message-write");
-                })
-                .subject("messaging-client")
-                .notBefore(Instant.now().minusSeconds(5l));
-    });
+    public static final SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtRequestPostProcessor = jwt().jwt(jwt ->
+            jwt.claims(claims -> {
+                                claims.put("scope", "message-read");
+                                claims.put("scope", "message-write");
+                            }
+                    )
+                    .subject("messaging-client")
+                    .notBefore(Instant.now().minusSeconds(5L)));
 
     @BeforeEach
     void setUp() {

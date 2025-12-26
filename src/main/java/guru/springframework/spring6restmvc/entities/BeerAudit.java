@@ -1,0 +1,64 @@
+package guru.springframework.spring6restmvc.entities;
+
+import guru.springframework.spring6restmvc.models.BeerStyle;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Builder
+@Getter
+@Setter
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+public class BeerAudit {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @UuidGenerator
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    private UUID auditId;
+
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    private UUID id;
+
+    private Integer version;
+
+    @Size(max = 50)
+    @Column(length = 50)
+    private String beerName;
+
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private BeerStyle beerStyle;
+
+    @Size(max = 255)
+    private String upc;
+
+    private Integer quantityOnHand;
+
+    private BigDecimal price;
+
+    private LocalDateTime createDate;
+
+    private LocalDateTime updateDate;
+
+    @CreationTimestamp
+    private LocalDateTime createDateAudit;
+
+    private String principalName;
+
+    private String auditEventType;
+}

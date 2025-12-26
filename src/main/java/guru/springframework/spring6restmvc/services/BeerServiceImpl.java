@@ -1,7 +1,7 @@
 package guru.springframework.spring6restmvc.services;
 
-import guru.springframework.spring6restmvc.model.BeerDTO;
-import guru.springframework.spring6restmvc.model.BeerStyle;
+import guru.springframework.spring6restmvc.models.BeerDTO;
+import guru.springframework.spring6restmvc.models.BeerStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,7 +28,7 @@ public class BeerServiceImpl implements BeerService {
                 .upc("12356")
                 .price(new BigDecimal("12.99"))
                 .quantityOnHand(122)
-                .createdDate(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
 
@@ -40,7 +40,7 @@ public class BeerServiceImpl implements BeerService {
                 .upc("12356222")
                 .price(new BigDecimal("11.99"))
                 .quantityOnHand(392)
-                .createdDate(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
 
@@ -52,7 +52,7 @@ public class BeerServiceImpl implements BeerService {
                 .upc("12356")
                 .price(new BigDecimal("13.99"))
                 .quantityOnHand(144)
-                .createdDate(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
 
@@ -83,7 +83,7 @@ public class BeerServiceImpl implements BeerService {
                 .upc(beer.getUpc())
                 .price(beer.getPrice())
                 .quantityOnHand(beer.getQuantityOnHand())
-                .createdDate(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
 

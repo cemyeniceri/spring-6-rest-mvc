@@ -1,4 +1,4 @@
-package guru.springframework.spring6restmvc.entity;
+package guru.springframework.spring6restmvc.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

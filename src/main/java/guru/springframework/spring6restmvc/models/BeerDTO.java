@@ -1,4 +1,4 @@
-package guru.springframework.spring6restmvc.model;
+package guru.springframework.spring6restmvc.models;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +33,7 @@ public class BeerDTO {
     @NotNull
     private BigDecimal price;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime createDate;
 
     private LocalDateTime updateDate;
 }

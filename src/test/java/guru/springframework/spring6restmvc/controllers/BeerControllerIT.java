@@ -1,13 +1,19 @@
 package guru.springframework.spring6restmvc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guru.springframework.spring6restmvc.entity.Beer;
+import guru.springframework.spring6restmvc.entities.Beer;
+import guru.springframework.spring6restmvc.events.BeerCreatedEvent;
+import guru.springframework.spring6restmvc.events.BeerDeletedEvent;
+import guru.springframework.spring6restmvc.events.BeerPatchedEvent;
+import guru.springframework.spring6restmvc.events.BeerUpdatedEvent;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
-import guru.springframework.spring6restmvc.model.BeerDTO;
-import guru.springframework.spring6restmvc.model.BeerStyle;
+import guru.springframework.spring6restmvc.models.BeerDTO;
+import guru.springframework.spring6restmvc.models.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
+import lombok.val;
 import org.hamcrest.core.IsNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +24,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +43,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@RecordApplicationEvents
 class BeerControllerIT {
+
+    @Autowired
+    ApplicationEvents applicationEvents;
 
     @Autowired
     BeerController beerController;
@@ -59,14 +71,12 @@ class BeerControllerIT {
 
     MockMvc mockMvc;
 
-    private final SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtRequestPostProcessor = jwt().jwt(jwt -> {
-        jwt.claims(claims -> {
-                    claims.put("scope", "message-read");
-                    claims.put("scope", "message-write");
-                })
-                .subject("messaging-client")
-                .notBefore(Instant.now().minusSeconds(5l));
-    });
+    private final SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor jwtRequestPostProcessor = jwt().jwt(jwt -> jwt.claims(claims -> {
+                claims.put("scope", "message-read");
+                claims.put("scope", "message-write");
+            })
+            .subject("messaging-client")
+            .notBefore(Instant.now().minusSeconds(5L)));
 
     @BeforeEach
     void setUp() {
@@ -223,6 +233,58 @@ class BeerControllerIT {
         assertThrows(NotFoundException.class, () -> beerController.updateBeerById(UUID.randomUUID(), BeerDTO.builder().build()));
     }
 
+    @Test
+    void testUpdateBeerMVC() throws Exception {
+
+        Beer beer = beerRepository.findAll().getFirst();
+        BeerDTO beerDTO = beerMapper.beerToBeerDTO(beer);
+        beerDTO.setBeerName("Updated Name");
+
+        mockMvc.perform(put(BeerController.BEER_PATH_ID, beer.getId())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beerDTO)))
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        Assertions.assertEquals(1, applicationEvents.stream(BeerUpdatedEvent.class).count());
+    }
+
+    @Test
+    void testPatchBeerMVC() throws Exception {
+
+        Beer beer = beerRepository.findAll().getFirst();
+
+        Map<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "Updated Name");
+
+        mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beerMap)))
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        Assertions.assertEquals(1, applicationEvents.stream(BeerPatchedEvent.class).count());
+    }
+
+    @Test
+    void testDeleteBeerMVC() throws Exception {
+
+        Beer beer = beerRepository.findAll().getFirst();
+
+        mockMvc.perform(delete(BeerController.BEER_PATH_ID, beer.getId())
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        Assertions.assertEquals(1, applicationEvents.stream(BeerDeletedEvent.class).count());
+    }
+
     @Transactional
     @Rollback
     @Test
@@ -239,6 +301,27 @@ class BeerControllerIT {
         UUID savedUUID = UUID.fromString(locationUUID[4]);
         Optional<Beer> savedBeer = beerRepository.findById(savedUUID);
         assertThat(savedBeer.isPresent()).isTrue();
+    }
+
+    @Test
+    void testCreateBeerMVC() throws Exception {
+        val beerDto = BeerDTO.builder()
+                .beerName("New Beer")
+                .beerStyle(BeerStyle.IPA)
+                .upc("123123")
+                .price(BigDecimal.TEN)
+                .quantityOnHand(5)
+                .build();
+
+        mockMvc.perform(post(BeerController.BEER_PATH)
+                        .with(BeerControllerTest.jwtRequestPostProcessor)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beerDto)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        Assertions.assertEquals(1, applicationEvents.stream(BeerCreatedEvent.class).count());
     }
 
     @Test

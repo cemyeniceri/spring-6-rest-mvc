@@ -1,6 +1,6 @@
 package guru.springframework.spring6restmvc.services;
 
-import guru.springframework.spring6restmvc.model.BeerCSVRecord;
+import guru.springframework.spring6restmvc.models.BeerCSVRecord;
 
 import java.io.File;
 import java.util.List;

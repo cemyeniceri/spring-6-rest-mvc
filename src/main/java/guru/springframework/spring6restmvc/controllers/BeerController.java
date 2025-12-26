@@ -1,7 +1,7 @@
 package guru.springframework.spring6restmvc.controllers;
 
-import guru.springframework.spring6restmvc.model.BeerDTO;
-import guru.springframework.spring6restmvc.model.BeerStyle;
+import guru.springframework.spring6restmvc.models.BeerDTO;
+import guru.springframework.spring6restmvc.models.BeerStyle;
 import guru.springframework.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

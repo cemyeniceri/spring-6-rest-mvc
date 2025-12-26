@@ -1,4 +1,4 @@
-package guru.springframework.spring6restmvc.config;
+package guru.springframework.spring6restmvc.configs;
 
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;

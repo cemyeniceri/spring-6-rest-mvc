@@ -1,8 +1,8 @@
 package guru.springframework.spring6restmvc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guru.springframework.spring6restmvc.config.SpringSecurityConfig;
-import guru.springframework.spring6restmvc.model.CustomerDTO;
+import guru.springframework.spring6restmvc.configs.SpringSecurityConfig;
+import guru.springframework.spring6restmvc.models.CustomerDTO;
 import guru.springframework.spring6restmvc.services.CustomerService;
 import guru.springframework.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ class CustomerControllerTest {
                     claims.put("scope", "message-write");
                 })
                 .subject("messaging-client")
-                .notBefore(Instant.now().minusSeconds(5l));
+                .notBefore(Instant.now().minusSeconds(5L));
     });
 
     @BeforeEach

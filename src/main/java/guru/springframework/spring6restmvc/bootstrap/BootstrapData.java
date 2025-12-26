@@ -1,9 +1,9 @@
 package guru.springframework.spring6restmvc.bootstrap;
 
-import guru.springframework.spring6restmvc.entity.Beer;
-import guru.springframework.spring6restmvc.entity.Customer;
-import guru.springframework.spring6restmvc.model.BeerCSVRecord;
-import guru.springframework.spring6restmvc.model.BeerStyle;
+import guru.springframework.spring6restmvc.entities.Beer;
+import guru.springframework.spring6restmvc.entities.Customer;
+import guru.springframework.spring6restmvc.models.BeerCSVRecord;
+import guru.springframework.spring6restmvc.models.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import guru.springframework.spring6restmvc.repositories.CustomerRepository;
 import guru.springframework.spring6restmvc.services.BeerCsvService;

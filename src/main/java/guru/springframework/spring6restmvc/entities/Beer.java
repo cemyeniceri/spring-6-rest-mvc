@@ -1,6 +1,6 @@
-package guru.springframework.spring6restmvc.entity;
+package guru.springframework.spring6restmvc.entities;
 
-import guru.springframework.spring6restmvc.model.BeerStyle;
+import guru.springframework.spring6restmvc.models.BeerStyle;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

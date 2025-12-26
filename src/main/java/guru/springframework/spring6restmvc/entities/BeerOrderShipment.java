@@ -1,4 +1,4 @@
-package guru.springframework.spring6restmvc.entity;
+package guru.springframework.spring6restmvc.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Builder
-public class BeerOrderLine {
+public class BeerOrderShipment {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -29,23 +29,20 @@ public class BeerOrderLine {
     @Version
     private Long version;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private BeerOrder beerOrder;
+
+    private String trackingNumber;
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createDate;
 
     @UpdateTimestamp
     private Timestamp updateDate;
-
-    @ManyToOne
-    private BeerOrder beerOrder;
-
-    @ManyToOne
-    private Beer beer;
-
-    private Integer orderQuantity = 0;
-    private Integer quantityAllocated = 0;
-
-    public boolean isNew() {
-        return this.id == null;
-    }
 }

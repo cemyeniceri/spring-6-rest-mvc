@@ -1,9 +1,9 @@
 package guru.springframework.spring6restmvc.repositories;
 
-import guru.springframework.spring6restmvc.entity.Beer;
-import guru.springframework.spring6restmvc.entity.BeerOrder;
-import guru.springframework.spring6restmvc.entity.BeerOrderShipment;
-import guru.springframework.spring6restmvc.entity.Customer;
+import guru.springframework.spring6restmvc.entities.Beer;
+import guru.springframework.spring6restmvc.entities.BeerOrder;
+import guru.springframework.spring6restmvc.entities.BeerOrderShipment;
+import guru.springframework.spring6restmvc.entities.Customer;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
