@@ -1,6 +1,7 @@
 package guru.springframework.spring6restmvc.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -42,7 +43,8 @@ public class BeerOrderLine {
     @ManyToOne
     private Beer beer;
 
-    private Integer orderQuantity = 0;
+    @Min(value = 1, message = "Quantity on hand must be greater than 0")
+    private Integer orderQuantity = 1;
     private Integer quantityAllocated = 0;
 
     public boolean isNew() {

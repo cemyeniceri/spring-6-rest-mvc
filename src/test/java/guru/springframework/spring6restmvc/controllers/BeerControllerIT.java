@@ -9,6 +9,7 @@ import guru.springframework.spring6restmvc.events.BeerUpdatedEvent;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.models.BeerDTO;
 import guru.springframework.spring6restmvc.models.BeerStyle;
+import guru.springframework.spring6restmvc.repositories.BeerOrderRepository;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
 import lombok.val;
@@ -77,6 +78,8 @@ class BeerControllerIT {
             })
             .subject("messaging-client")
             .notBefore(Instant.now().minusSeconds(5L)));
+    @Autowired
+    private BeerOrderRepository beerOrderRepository;
 
     @BeforeEach
     void setUp() {
@@ -272,8 +275,11 @@ class BeerControllerIT {
 
     @Test
     void testDeleteBeerMVC() throws Exception {
-
-        Beer beer = beerRepository.findAll().getFirst();
+        Beer beer = beerRepository.save(Beer.builder().beerName("New beer")
+                .upc("123")
+                .beerStyle(BeerStyle.IPA)
+                .price(BigDecimal.TEN)
+                .build());
 
         mockMvc.perform(delete(BeerController.BEER_PATH_ID, beer.getId())
                         .with(BeerControllerTest.jwtRequestPostProcessor)
@@ -348,6 +354,7 @@ class BeerControllerIT {
     @Transactional
     @Rollback
     void testEmptyBeerList() {
+        beerOrderRepository.deleteAll();
         beerRepository.deleteAll();
         assertThat(beerController.listBeers(null, null, false, 1, 25).getContent().size()).isEqualTo(0);
     }
