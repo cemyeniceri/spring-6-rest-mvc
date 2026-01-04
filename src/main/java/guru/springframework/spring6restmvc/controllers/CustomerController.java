@@ -1,7 +1,7 @@
 package guru.springframework.spring6restmvc.controllers;
 
-import guru.springframework.spring6restmvc.models.CustomerDTO;
 import guru.springframework.spring6restmvc.services.CustomerService;
+import guru.springframework.spring6restmvcapi.models.CustomerDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

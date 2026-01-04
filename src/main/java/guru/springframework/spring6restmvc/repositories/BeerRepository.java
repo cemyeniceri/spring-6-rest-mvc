@@ -1,7 +1,7 @@
 package guru.springframework.spring6restmvc.repositories;
 
 import guru.springframework.spring6restmvc.entities.Beer;
-import guru.springframework.spring6restmvc.models.BeerStyle;
+import guru.springframework.spring6restmvcapi.models.BeerStyle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

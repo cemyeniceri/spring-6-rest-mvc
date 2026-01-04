@@ -1,6 +1,6 @@
 package guru.springframework.spring6restmvc.entities;
 
-import guru.springframework.spring6restmvc.models.BeerStyle;
+import guru.springframework.spring6restmvcapi.models.BeerStyle;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
